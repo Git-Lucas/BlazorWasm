@@ -1,0 +1,83 @@
+﻿@page "/tarefas/{id:int}"
+@using BlazorWasm.Models
+
+<PageTitle>@Model.Titulo</PageTitle>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
+                <h1>@Model.Titulo</h1>
+
+                <MudList Clickable=true @bind-SelectedItem="selectedItem" @bind-SelectedValue="selectedValue">
+                    @foreach (var item in Model.Tarefas)
+                    {
+                        <MudListItem Text="@item.Titulo"
+                                 Value="@item.Id"
+                                 OnClick="() => {item.Feito = !item.Feito;}"
+                                 IconColor="@(item.Feito ? Color.Success : Color.Default)"
+                                 Avatar="@(item.Feito ? Icons.Material.Filled.Check : Icons.Material.Filled.Circle)" />
+                    }
+                </MudList>
+
+                <br />
+                <br />
+
+                <EditForm Model="@novaTarefa" OnValidSubmit="@HandleValidSubmit">
+                    <MudCard>
+                        <MudCardContent>
+                            <h2>Criar uma nova tarefa para @Model.Titulo</h2>
+
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <MudTextField Label="Titulo"
+                                          Class="mt-3"
+                                          @bind-Value="novaTarefa.Titulo"
+                                          For="@(() => novaTarefa.Titulo)" />
+                        </MudCardContent>
+
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Class="ml-auto">
+                                Salvar
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Class="ml-auto"
+                                       Link="/">
+                                Retornar ao início
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </EditForm>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private ListaTarefas Model { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Model = AppState.Listas.FirstOrDefault(x => x.Id == Id, new ListaTarefas());
+    }
+
+    private Tarefa novaTarefa = new();
+
+    private void HandleValidSubmit()
+    {
+        novaTarefa.Id = Model.Tarefas.Count + 1;
+        Model.Tarefas.Add(novaTarefa);
+        novaTarefa = new();
+    }
+
+    MudListItem selectedItem;
+    object selectedValue = 1;
+}

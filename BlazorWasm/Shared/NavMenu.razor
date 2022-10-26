@@ -1,0 +1,28 @@
+﻿@inject NavigationManager NavigationManager
+
+<MudNavMenu>
+    @if(AppState.Listas.Count == 0){
+        <NenhumaTarefaEncontrada />
+    }
+
+    @foreach(var item in AppState.Listas){
+        <MudNavLink OnClick="() => {IrParaLista(item.Id);}">@item.Titulo</MudNavLink>
+    }
+</MudNavMenu>
+
+@code{
+    protected override void OnInitialized()
+    {
+        AppState.OnChanged += OnAppStateChanged;
+    }
+
+    void Dispose(){
+        AppState.OnChanged -= OnAppStateChanged;
+    }
+
+    private void OnAppStateChanged(object? o, EventArgs e){
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void IrParaLista(int id) => NavigationManager.NavigateTo($"/tarefas/{id}");
+}

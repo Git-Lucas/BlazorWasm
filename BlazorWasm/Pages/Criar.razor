@@ -1,0 +1,53 @@
+﻿@page "/tarefas/criar"
+@*@using Microsoft.AspNetCore.Components*@
+@using BlazorWasm.Models
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Nova Lista</PageTitle>
+
+<br />
+<MudGrid>
+    <MudItem xs="12">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
+                <EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+                    <MudCard>
+                        <MudCardContent>
+                            <h1>Criar um grupo de tarefas</h1>
+
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+                            <MudTextField Label="Titulo"
+                                          Class="mt-3"
+                                          @bind-Value="model.Titulo"
+                                          For="@(() => model.Titulo)" />
+                        </MudCardContent>
+
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Class="ml-auto">
+                                Salvar
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </EditForm>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private ListaTarefas model = new();
+
+    private void HandleValidSubmit()
+    {
+        model.Id = AppState.Listas.Count + 1;
+        AppState.Listas.Add(model);
+        AppState.NotifyChanges(model, null);
+        NavigationManager.NavigateTo($"/tarefas/{model.Id}");
+    }
+}

@@ -1,0 +1,50 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Início</PageTitle>
+
+
+@if (AppState.Listas.Count == 0)
+{
+    <NenhumaTarefaEncontrada />
+}
+else
+{
+    <MudGrid Justify="Justify.Center">
+        <MudPaper Width="400px" Style="margin-top:30px">
+            <MudList Clickable=true>
+                <MudListSubheader>Tarefas Criadas</MudListSubheader>
+
+                @foreach (var item in AppState.Listas)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.Bookmark"
+                         Text="@item.Titulo"
+                         InitiallyExpanded=true>
+                        <NestedList>
+                            @foreach (var i in item.Tarefas)
+                            {
+                                <MudListItem Icon="@Icons.Material.Filled.BookmarkBorder"
+                                 OnClick="() => IrParaLista(item.Id)">
+                                    @i.Titulo
+                                </MudListItem>
+                            }
+                        </NestedList>
+                    </MudListItem>
+                }
+            </MudList>
+
+            <MudCardActions>
+                <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       Class="ml-auto"
+                       Link="/tarefas/criar">
+                    Criar nova lista
+                </MudButton>
+            </MudCardActions>
+        </MudPaper>
+    </MudGrid>
+}
+
+@code {
+    private void IrParaLista(int id) => NavigationManager.NavigateTo($"/tarefas/{id}");
+}

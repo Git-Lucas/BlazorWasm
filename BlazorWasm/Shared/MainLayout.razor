@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Edge="Edge.Start"
+                       OnClick="() => EstadoMenu()" />
+        <MudNavLink OnClick="() => IrParaInicio()">Minhas Tarefas</MudNavLink>
+    </MudAppBar>
+    <MudDrawer Open="_menuAberto">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _menuAberto = true;
+
+    private void EstadoMenu()
+    {
+        _menuAberto = !_menuAberto;
+    }
+
+    private void IrParaInicio() => NavigationManager.NavigateTo("/");
+}
